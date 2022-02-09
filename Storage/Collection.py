@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 import gridfs
+from Employee import Employee
+import numpy as np
 
 class Collection:
     def __init__(self, connectionUrl, database):
@@ -19,7 +21,9 @@ class Collection:
     def FindOneBasedOneFirstName(self,collectionName, entryName ):
         collection = self.database[collectionName]
         query={"FirstName": entryName}
-        return collection.find_one(query)
+        args=collection.find_one(query)
+        employee=Employee(**args)
+        return employee
 
     def FindOne(self, collectionName, field, value):
         collection = self.database[collectionName]
@@ -31,6 +35,16 @@ class Collection:
         for entry in collection.find({field : {"$regex" : value}}):
             entries.append(entry)
         return entries
+
+    def DeserializeImage(self, entry):
+        imageEntry=entry["Image"]
+        codedImage=self.fileSystem.get(imageEntry["imageID"])
+        image=np.frombuffer(codedImage.read(), dtype=np.uint8)
+        image=np.reshape(image, imageEntry["shape"])
+        return image
+
+
+
 
 
 

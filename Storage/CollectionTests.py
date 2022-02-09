@@ -33,7 +33,7 @@ class CollectionTests(unittest.TestCase):
     def test_get_entry_back(self):
         entry=self.collection.FindOneBasedOneFirstName(self.name,"Abir")
         self.assertIsNotNone(entry)
-        self.assertEqual(entry["LastName"], "Bhattacharyya")
+        self.assertEqual(entry.LastName, "Bhattacharyya")
 
     def test_get_entry_back_based_on_criteria(self):
         entry=self.collection.FindOne(self.name,"FirstName", "Abir")
@@ -44,6 +44,13 @@ class CollectionTests(unittest.TestCase):
         entry=self.collection.FindAll(self.name,"FirstName", "Abir")
         self.assertIsNotNone(entry)
         self.assertGreaterEqual(len(entry), 2)
+
+    def test_deserialize_image(self):
+        entry = self.collection.FindOne(self.name, "FirstName", "Vishal")
+        test_image=self.collection.DeserializeImage(entry)
+        self.assertEqual(test_image.shape, (272,265,3))
+
+
 
 
 
